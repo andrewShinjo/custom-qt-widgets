@@ -9,6 +9,7 @@ class MbButton : public QWidget
 public:
     explicit MbButton(QWidget *parent = nullptr);
 protected:
+    void enterEvent(QEnterEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
 
 signals:
