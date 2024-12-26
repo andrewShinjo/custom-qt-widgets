@@ -1,9 +1,29 @@
 #include <QPainter>
 #include "mbbutton.h"
 
-MbButton::MbButton(QWidget *parent)
-    : QWidget{parent}
-{}
+/* public */
+
+MbButton::MbButton(QWidget *parent): QWidget{parent}, m_text("Button")
+{
+
+}
+
+QString MbButton::getText() const
+{
+    return m_text;
+}
+
+void MbButton::setText(const QString &text)
+{
+    if(this->m_text == text)
+    {
+        return;
+    }
+
+    m_text = text;
+    emit textChanged(m_text);
+    update();
+}
 
 void MbButton::enterEvent(QEnterEvent *event)
 {
@@ -17,6 +37,5 @@ void MbButton::paintEvent(QPaintEvent *event)
     QFont font("Arial", 20, QFont::Bold);
     painter.setFont(font);
 
-    QString text = "Button";
-    painter.drawText(rect(), Qt::AlignCenter, text);
+    painter.drawText(rect(), Qt::AlignCenter, m_text);
 }
