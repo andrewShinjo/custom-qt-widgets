@@ -6,6 +6,7 @@
 MbButton::MbButton(QWidget *parent): QWidget{parent}, m_text("Button")
 {
     isHovering = false;
+    isPressed = false;
 }
 
 QString MbButton::getText() const
@@ -37,11 +38,29 @@ void MbButton::leaveEvent(QEvent *event)
     update();
 }
 
+void MbButton::mousePressEvent(QMouseEvent *event)
+{
+    isPressed = true;
+    update();
+}
+
+void MbButton::mouseReleaseEvent(QMouseEvent *event)
+{
+    isPressed = false;
+    update();
+}
+
 void MbButton::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
 
-    if(isHovering)
+    if(isPressed)
+    {
+        painter.setBrush(QColor(70, 120, 170));
+        painter.setPen(Qt::NoPen);
+        painter.drawRect(rect());
+    }
+    else if(isHovering)
     {
         painter.setBrush(QColor(100, 150, 200));
         painter.setPen(Qt::NoPen);

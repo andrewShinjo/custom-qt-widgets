@@ -15,12 +15,15 @@ public:
 protected:
     void enterEvent(QEnterEvent *event) override;
     void leaveEvent(QEvent *event) override;
+    void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
 signals:
     void textChanged(const QString &text);
 private:
     QString m_text;
     bool isHovering;
+    bool isPressed;
 };
 
 #endif // MBBUTTON_H
