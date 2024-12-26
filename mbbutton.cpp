@@ -9,5 +9,12 @@ void MbButton::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
 
-    painter.drawRect(0, 0, 200, 50);
+    QRect rectangle(0, 0, 200, 100);
+    painter.drawRect(rectangle);
+
+    QFont font("Arial", 20, QFont::Bold);
+    painter.setFont(font);
+
+    QString text = "Button";
+    painter.drawText(rectangle, Qt::AlignCenter, text);
 }
