@@ -14,11 +14,13 @@ public:
     void setText(const QString &text);
 protected:
     void enterEvent(QEnterEvent *event) override;
+    void leaveEvent(QEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
 signals:
     void textChanged(const QString &text);
 private:
     QString m_text;
+    bool isHovering;
 };
 
 #endif // MBBUTTON_H
