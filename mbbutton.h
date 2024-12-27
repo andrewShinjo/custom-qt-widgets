@@ -15,11 +15,13 @@ public:
 protected:
     void enterEvent(QEnterEvent *event) override;
     void leaveEvent(QEvent *event) override;
+    QSize minimumSizeHint() const override;
     void mousePressEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
     QSize sizeHint() const override;
 signals:
+    void clicked();
     void textChanged(const QString &text);
 private:
     QString m_text;

@@ -2,17 +2,24 @@
 
 #include "./mbbutton.h"
 
+void showMessage()
+{
+    qDebug() << "Connected to click";
+}
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     QWidget window;
     QVBoxLayout *layout = new QVBoxLayout;
 
-    MbButton *myButton = new MbButton();
-    QPushButton *qtButton = new QPushButton("Button");
+    MbButton *button1 = new MbButton();
+    MbButton *button2 = new MbButton();
 
-    layout->addWidget(myButton);
-    layout->addWidget(qtButton);
+    layout->addWidget(button1);
+    layout->addWidget(button2);
+
+    QObject::connect(button1, &MbButton::clicked, showMessage);
 
     window.setLayout(layout);
     window.show();

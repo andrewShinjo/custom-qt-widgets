@@ -40,9 +40,15 @@ void MbButton::leaveEvent(QEvent *event)
     update();
 }
 
+QSize MbButton::minimumSizeHint() const
+{
+    return QSize(100, 22);
+}
+
 void MbButton::mousePressEvent(QMouseEvent *event)
 {
     isPressed = true;
+    emit clicked();
     update();
 }
 
