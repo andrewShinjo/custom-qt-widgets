@@ -67,6 +67,12 @@ void MbButton::paintEvent(QPaintEvent *event)
         painter.drawRect(rect());
     }
 
+    // Draw border.
+    {
+        painter.setPen(QPen(Qt::black, 2));
+        painter.drawRect(rect());
+    }
+
     QFont font("Arial", 20, QFont::Bold);
     painter.setPen(Qt::black);
     painter.setFont(font);
