@@ -3,15 +3,25 @@
 
 const int DEFAULT_MARGIN = 10;
 
-MbLineEdit::MbLineEdit(QWidget *parent) : QWidget{parent}
+MbLineEdit::MbLineEdit(QWidget *parent)
+    : QWidget{parent}, m_cursorPosition(0), m_text("")
 {
     isSelected = false;
-    m_text = "";
+}
+
+int MbLineEdit::getCursorPosition() const
+{
+    return m_cursorPosition;
 }
 
 QString MbLineEdit::getText() const
 {
     return m_text;
+}
+
+void MbLineEdit::setCursorPosition(int cursorPosition)
+{
+    m_cursorPosition = cursorPosition;
 }
 
 void MbLineEdit::setText(const QString &text)
@@ -49,15 +59,28 @@ void MbLineEdit::paintEvent(QPaintEvent *event)
         painter.drawRect(rect());
     }
 
+    QFont font("Arial", 12);
+    painter.setFont(font);
+    QFontMetrics metrics(font);
+    int maxWidth = width();
+    QString elidedText = metrics.elidedText(m_text, Qt::ElideRight, maxWidth);
+
     // Draw text.
     {
         painter.setPen(QPen(Qt::black, 2));
-        QFont font("Arial", 12);
-        painter.setFont(font);
-        QFontMetrics metrics(font);
-        int maxWidth = width();
-        QString elidedText = metrics.elidedText(m_text, Qt::ElideRight, maxWidth);
         painter.drawText(rect(), Qt::AlignLeft | Qt::AlignVCenter, elidedText);
+    }
+
+    // Draw text cursor.
+    {
+        if(isSelected)
+        {
+            m_cursorPosition = 3;
+            int cursorX = metrics.horizontalAdvance(elidedText.left(m_cursorPosition));
+            int cursorY = (height() - metrics.height()) / 2;
+            int cursorHeight = metrics.height();
+            painter.drawLine(cursorX, cursorY, cursorX, cursorY + cursorHeight);
+        }
     }
 }
 
