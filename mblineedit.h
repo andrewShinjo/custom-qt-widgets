@@ -34,6 +34,8 @@ private:
     int m_cursorPosition;
     QString m_text;
     bool isSelected;
+
+    int charIndexAt(int x);
 };
 
 #endif // MBLINEEDIT_H

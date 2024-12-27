@@ -1,3 +1,4 @@
+#include <QMouseEvent>
 #include <QPainter>
 #include "mblineedit.h"
 
@@ -38,6 +39,13 @@ QSize MbLineEdit::minimumSizeHint() const
 
 void MbLineEdit::mousePressEvent(QMouseEvent *event)
 {
+    // Determine which character I pressed.
+    {
+        int x = event->pos().x();
+        int index = charIndexAt(x);
+        m_cursorPosition = index;
+    }
+
     isSelected = true;
     update();
 }
@@ -75,7 +83,6 @@ void MbLineEdit::paintEvent(QPaintEvent *event)
     {
         if(isSelected)
         {
-            m_cursorPosition = 3;
             int cursorX = metrics.horizontalAdvance(elidedText.left(m_cursorPosition));
             int cursorY = (height() - metrics.height()) / 2;
             int cursorHeight = metrics.height();
@@ -89,4 +96,24 @@ QSize MbLineEdit::sizeHint() const
     int height = 12 + 5 + 5;
     int width = rect().width();
     return QSize(width, height);
+}
+
+/* private */
+
+int MbLineEdit::charIndexAt(int x)
+{
+    QFont font("Arial", 12);
+    QFontMetrics metrics(font);
+    int widthAccumulated = 0;
+
+    for(int i = 0; i < m_text.length(); i++)
+    {
+        widthAccumulated += metrics.horizontalAdvance(m_text[i]);
+        if(x < widthAccumulated)
+        {
+            return i;
+        }
+    }
+
+    return m_text.length();
 }
