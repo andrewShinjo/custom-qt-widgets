@@ -73,8 +73,14 @@ void MbButton::paintEvent(QPaintEvent *event)
         painter.drawRect(rect());
     }
 
-    QFont font("Arial", 20, QFont::Bold);
+    // Draw text.
+    QFont font("Arial", 12, QFont::Bold);
     painter.setPen(Qt::black);
     painter.setFont(font);
     painter.drawText(rect(), Qt::AlignCenter, m_text);
+}
+
+QSize MbButton::sizeHint() const
+{
+    return QSize(300, 22);
 }
