@@ -10,6 +10,7 @@ class MbButton : public QWidget
 
 public:
     explicit MbButton(QWidget *parent = nullptr);
+    explicit MbButton(const QString &text, QWidget *parent = nullptr);
     QString getText() const;
     void setText(const QString &text);
 protected:

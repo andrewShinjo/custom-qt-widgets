@@ -3,13 +3,19 @@
 
 /* public */
 
-MbButton::MbButton(QWidget *parent): QWidget{parent}, m_text("Button")
+MbButton::MbButton(QWidget *parent): MbButton("Button", parent)
+{
+
+}
+
+MbButton::MbButton(const QString &text, QWidget *parent): QWidget{parent}
 {
     isHovering = false;
     isPressed = false;
-
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
+    m_text = text;
 }
+
 
 QString MbButton::getText() const
 {
