@@ -24,6 +24,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         ${PROJECT_SOURCES}
 
         mbbutton.h mbbutton.cpp
+        mblineedit.h mblineedit.cpp
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET custom-qt-widgets APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

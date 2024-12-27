@@ -1,6 +1,7 @@
 #include <QtWidgets>
 
 #include "./mbbutton.h"
+#include "./mblineedit.h"
 
 void showMessage()
 {
@@ -14,16 +15,10 @@ int main(int argc, char *argv[])
     QVBoxLayout *layout = new QVBoxLayout;
 
     MbButton *button1 = new MbButton("Button 1");
-    MbButton *button2 = new MbButton("Button 2");
-    MbButton *button3 = new MbButton("Button 3");
-    MbButton *button4 = new MbButton("Button 4");
-    MbButton *button5 = new MbButton("Button 5");
+    MbLineEdit *lineEdit = new MbLineEdit();
 
     layout->addWidget(button1);
-    layout->addWidget(button2);
-    layout->addWidget(button3);
-    layout->addWidget(button4);
-    layout->addWidget(button5);
+    layout->addWidget(lineEdit);
 
     QObject::connect(button1, &MbButton::clicked, showMessage);
 

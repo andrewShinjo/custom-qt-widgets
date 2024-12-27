@@ -52,7 +52,6 @@ QSize MbButton::minimumSizeHint() const
     QFont font("Arial", 12, QFont::Normal);
     QFontMetrics metrics(font);
     int textWidth = metrics.horizontalAdvance(m_text);
-
     return QSize(textWidth + 10, 22);
 }
 
