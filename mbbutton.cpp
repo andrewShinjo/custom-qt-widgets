@@ -7,6 +7,8 @@ MbButton::MbButton(QWidget *parent): QWidget{parent}, m_text("Button")
 {
     isHovering = false;
     isPressed = false;
+
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 }
 
 QString MbButton::getText() const
