@@ -5,7 +5,9 @@
 const int DEFAULT_MARGIN = 10;
 
 MbLineEdit::MbLineEdit(QWidget *parent)
-    : QWidget{parent}, m_cursorPosition(0), m_text("")
+    : QWidget{parent},
+    m_cursorPosition(0),
+    m_text("")
 {
     // Initialize timer
     {
@@ -15,6 +17,7 @@ MbLineEdit::MbLineEdit(QWidget *parent)
     }
 
     isSelected = false;
+    setFocusPolicy(Qt::StrongFocus);
 }
 
 int MbLineEdit::getCursorPosition() const
@@ -35,6 +38,13 @@ void MbLineEdit::setCursorPosition(int cursorPosition)
 void MbLineEdit::setText(const QString &text)
 {
     m_text = text;
+}
+
+/* protected */
+
+void MbLineEdit::keyPressEvent(QKeyEvent *event)
+{
+    qDebug() << "Key press event";
 }
 
 QSize MbLineEdit::minimumSizeHint() const

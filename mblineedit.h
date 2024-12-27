@@ -22,6 +22,7 @@ public:
     void setText(const QString &text);
 
 protected:
+    void keyPressEvent(QKeyEvent *event) override;
     QSize minimumSizeHint() const override;
     void mousePressEvent(QMouseEvent *event) override;
     void paintEvent(QPaintEvent *event) override;
