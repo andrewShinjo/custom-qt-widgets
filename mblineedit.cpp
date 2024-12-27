@@ -7,6 +7,13 @@ const int DEFAULT_MARGIN = 10;
 MbLineEdit::MbLineEdit(QWidget *parent)
     : QWidget{parent}, m_cursorPosition(0), m_text("")
 {
+    // Initialize timer
+    {
+        timer = new QTimer(this);
+        connect(timer, &QTimer::timeout, this, &MbLineEdit::blinkCursor);
+        timer->start(500);
+    }
+
     isSelected = false;
 }
 
@@ -81,7 +88,7 @@ void MbLineEdit::paintEvent(QPaintEvent *event)
 
     // Draw text cursor.
     {
-        if(isSelected)
+        if(isSelected && isCursorVisible)
         {
             int cursorX = metrics.horizontalAdvance(elidedText.left(m_cursorPosition));
             int cursorY = (height() - metrics.height()) / 2;
@@ -96,6 +103,14 @@ QSize MbLineEdit::sizeHint() const
     int height = 12 + 5 + 5;
     int width = rect().width();
     return QSize(width, height);
+}
+
+/* private slots */
+
+void MbLineEdit::blinkCursor()
+{
+    isCursorVisible = !isCursorVisible;
+    update();
 }
 
 /* private */

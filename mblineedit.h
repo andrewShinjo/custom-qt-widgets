@@ -1,6 +1,7 @@
 #ifndef MBLINEEDIT_H
 #define MBLINEEDIT_H
 
+#include <QTimer>
 #include <QWidget>
 
 class MbLineEdit : public QWidget
@@ -30,9 +31,14 @@ signals:
     void cursorPositionChanged(const int &cursorPosition);
     void textChanged(const QString &text);
 
+private slots:
+    void blinkCursor();
+
 private:
     int m_cursorPosition;
     QString m_text;
+    QTimer *timer;
+    bool isCursorVisible;
     bool isSelected;
 
     int charIndexAt(int x);
