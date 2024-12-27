@@ -42,7 +42,12 @@ void MbButton::leaveEvent(QEvent *event)
 
 QSize MbButton::minimumSizeHint() const
 {
-    return QSize(100, 22);
+    // Minimum width is width of text + margin
+    QFont font("Arial", 12, QFont::Normal);
+    QFontMetrics metrics(font);
+    int textWidth = metrics.horizontalAdvance(m_text);
+
+    return QSize(textWidth + 10, 22);
 }
 
 void MbButton::mousePressEvent(QMouseEvent *event)
@@ -82,7 +87,7 @@ void MbButton::paintEvent(QPaintEvent *event)
     }
 
     // Draw text.
-    QFont font("Arial", 12, QFont::Bold);
+    QFont font("Arial", 12, QFont::Normal);
     painter.setPen(Qt::black);
     painter.setFont(font);
     painter.drawText(rect(), Qt::AlignCenter, m_text);
@@ -90,5 +95,8 @@ void MbButton::paintEvent(QPaintEvent *event)
 
 QSize MbButton::sizeHint() const
 {
-    return QSize(300, 22);
+    QFont font("Arial", 12, QFont::Normal);
+    QFontMetrics metrics(font);
+    int textWidth = metrics.horizontalAdvance(m_text);
+    return QSize(textWidth + 10, 22);
 }

@@ -14,10 +14,10 @@ int main(int argc, char *argv[])
     QVBoxLayout *layout = new QVBoxLayout;
 
     MbButton *button1 = new MbButton();
-    MbButton *button2 = new MbButton();
+    QPushButton *button2 = new QPushButton("Button Button Button");
 
     layout->addWidget(button1);
-    layout->addWidget(button2);
+    // layout->addWidget(button2);
 
     QObject::connect(button1, &MbButton::clicked, showMessage);
 
