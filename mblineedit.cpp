@@ -3,18 +3,32 @@
 #include <QtGlobal>
 #include "mblineedit.h"
 
-const int DEFAULT_MARGIN = 10;
-
 MbLineEdit::MbLineEdit(QWidget *parent)
     : QWidget{parent},
     m_cursorPosition(0),
     m_text("")
 {
-    // Initialize timer
+    // Initialize timer.
     {
         timer = new QTimer(this);
         connect(timer, &QTimer::timeout, this, &MbLineEdit::blinkCursor);
         timer->start(500);
+    }
+
+    // Initialize appearance variables.
+    {
+        font = new QFont("Arial", 12);
+        bottomPadding = DEFAULT_PADDING;
+        leftPadding = DEFAULT_PADDING;
+        rightPadding = DEFAULT_PADDING;
+        topPadding = DEFAULT_PADDING;
+    }
+
+    // Initialize text selection variables.
+    {
+        selecting = false;
+        selectionStart = 0;
+        selectionEnd = 0;
     }
 
     isSelected = false;
@@ -107,7 +121,7 @@ void MbLineEdit::keyPressEvent(QKeyEvent *event)
 
 QSize MbLineEdit::minimumSizeHint() const
 {
-    int height = 12 + 5 + 5;
+    int height = font->pointSize() + bottomPadding + topPadding;
     int width = rect().width();
     return QSize(width, height);
 }
@@ -178,6 +192,8 @@ void MbLineEdit::paintEvent(QPaintEvent *event)
     int maxWidth = width();
     QString elidedText = metrics.elidedText(m_text, Qt::ElideRight, maxWidth);
 
+    QRect paddedRectagle = rect().adjusted(leftPadding, 0, -1 * rightPadding, 0);
+
     bool highlightTextSelection = selectionStart != selectionEnd;
 
     // Draw text selection.
@@ -186,23 +202,26 @@ void MbLineEdit::paintEvent(QPaintEvent *event)
         {
             int startX = metrics.horizontalAdvance(elidedText.left(selectionStart));
             int endX = metrics.horizontalAdvance(elidedText.left(selectionEnd));
+            QRect highlightRect =
+                QRect(QPoint(startX + leftPadding, topPadding),
+                QSize(endX - startX, metrics.height() - bottomPadding));
             painter.setBrush(Qt::yellow);
             painter.setPen(Qt::NoPen);
-            painter.drawRect(QRect(QPoint(startX, 5), QSize(endX - startX, metrics.height() - 5)));
+            painter.drawRect(highlightRect);
         }
     }
 
     // Draw text.
     {
         painter.setPen(QPen(Qt::black, 2));
-        painter.drawText(rect(), Qt::AlignLeft | Qt::AlignVCenter, elidedText);
+        painter.drawText(paddedRectagle, Qt::AlignLeft | Qt::AlignVCenter, elidedText);
     }
 
     // Draw text cursor.
     {
         if(isSelected && isCursorVisible && !highlightTextSelection)
         {
-            int cursorX = metrics.horizontalAdvance(elidedText.left(m_cursorPosition));
+            int cursorX = metrics.horizontalAdvance(elidedText.left(m_cursorPosition)) + leftPadding;
             int cursorY = (height() - metrics.height()) / 2;
             int cursorHeight = metrics.height();
             painter.drawLine(cursorX, cursorY, cursorX, cursorY + cursorHeight);
@@ -212,7 +231,7 @@ void MbLineEdit::paintEvent(QPaintEvent *event)
 
 QSize MbLineEdit::sizeHint() const
 {
-    int height = 12 + 5 + 5;
+    int height = font->pointSize() + bottomPadding + topPadding;
     int width = rect().width();
     return QSize(width, height);
 }
@@ -241,6 +260,5 @@ int MbLineEdit::charIndexAt(int x)
             return i;
         }
     }
-
     return m_text.length();
 }

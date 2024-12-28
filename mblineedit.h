@@ -40,6 +40,10 @@ private slots:
     void blinkCursor();
 
 private:
+
+    /* constants */
+    static const int DEFAULT_PADDING = 5;
+
     int m_cursorPosition;
     QString m_text;
     QTimer *timer;
@@ -50,6 +54,13 @@ private:
     bool selecting;
     int selectionStart;
     int selectionEnd;
+
+    // appearance variables
+    QFont *font;
+    int bottomPadding;
+    int leftPadding;
+    int rightPadding;
+    int topPadding;
 
     int charIndexAt(int x);
     void insertCharAtCursor(QChar c);
