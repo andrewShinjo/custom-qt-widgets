@@ -57,13 +57,17 @@ private:
 
     // appearance variables
     QFont *font;
+
     int bottomPadding;
     int leftPadding;
     int rightPadding;
     int topPadding;
 
+    int offset;
+
     int charIndexAt(int x);
     void insertCharAtCursor(QChar c);
+    void updateOffset();
 };
 
 #endif // MBLINEEDIT_H

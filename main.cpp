@@ -16,11 +16,14 @@ int main(int argc, char *argv[])
 
     MbButton *button1 = new MbButton("Button 1");
     MbLineEdit *lineEdit = new MbLineEdit();
+    QLineEdit *lineEdit2 = new QLineEdit();
 
     lineEdit->setText("This is text");
 
     layout->addWidget(button1);
     layout->addWidget(lineEdit);
+    layout->addWidget(lineEdit2);
+    layout->addStretch();
 
     QObject::connect(button1, &MbButton::clicked, showMessage);
 

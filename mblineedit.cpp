@@ -22,6 +22,7 @@ MbLineEdit::MbLineEdit(QWidget *parent)
         leftPadding = DEFAULT_PADDING;
         rightPadding = DEFAULT_PADDING;
         topPadding = DEFAULT_PADDING;
+        offset = 0;
     }
 
     // Initialize text selection variables.
@@ -49,6 +50,7 @@ QString MbLineEdit::getText() const
 void MbLineEdit::setCursorPosition(int cursorPosition)
 {
     m_cursorPosition = cursorPosition;
+    updateOffset();
 }
 
 void MbLineEdit::setText(const QString &text)
@@ -69,7 +71,7 @@ void MbLineEdit::keyPressEvent(QKeyEvent *event)
             if(m_cursorPosition > 0)
             {
                 m_cursorPosition--;
-                update();
+                updateOffset();
             }
             break;
         }
@@ -78,7 +80,7 @@ void MbLineEdit::keyPressEvent(QKeyEvent *event)
             if(m_cursorPosition < m_text.length())
             {
                 m_cursorPosition++;
-                update();
+                updateOffset();
             }
             break;
         }
@@ -98,6 +100,7 @@ void MbLineEdit::keyPressEvent(QKeyEvent *event)
                 if(m_cursorPosition > 0)
                 {
                     m_text.remove(--m_cursorPosition, 1);
+                    updateOffset();
                 }
             }
         }
@@ -116,6 +119,8 @@ void MbLineEdit::keyPressEvent(QKeyEvent *event)
                 selectionStart = 0;
                 selectionEnd = 0;
             }
+
+            updateOffset();
         }
     }
 
@@ -126,13 +131,14 @@ void MbLineEdit::keyPressEvent(QKeyEvent *event)
         selectionStart = 0;
         selectionEnd = m_text.length();
     }
+
+    update();
 }
 
 QSize MbLineEdit::minimumSizeHint() const
 {
     int height = font->pointSize() + bottomPadding + topPadding;
-    int width = rect().width();
-    return QSize(width, height);
+    return QSize(0, height);
 }
 
 void MbLineEdit::mouseMoveEvent(QMouseEvent *event)
@@ -195,22 +201,18 @@ void MbLineEdit::paintEvent(QPaintEvent *event)
         painter.drawRect(rect());
     }
 
-    QFont font("Arial", 12);
-    painter.setFont(font);
-    QFontMetrics metrics(font);
-    int maxWidth = width();
-    QString elidedText = metrics.elidedText(m_text, Qt::ElideRight, maxWidth);
-
+    painter.setFont(*font);
+    QFontMetrics metrics(*font);
+    int maxWidth = width() - leftPadding - rightPadding;
     QRect paddedRectagle = rect().adjusted(leftPadding, 0, -1 * rightPadding, 0);
-
     bool highlightTextSelection = selectionStart != selectionEnd;
 
     // Draw text selection.
     {
         if(highlightTextSelection)
         {
-            int startX = metrics.horizontalAdvance(elidedText.left(selectionStart));
-            int endX = metrics.horizontalAdvance(elidedText.left(selectionEnd));
+            int startX = metrics.horizontalAdvance(m_text.left(selectionStart));
+            int endX = metrics.horizontalAdvance(m_text.left(selectionEnd));
             QRect highlightRect =
                 QRect(QPoint(startX + leftPadding, topPadding),
                 QSize(endX - startX, metrics.height() - bottomPadding));
@@ -222,15 +224,16 @@ void MbLineEdit::paintEvent(QPaintEvent *event)
 
     // Draw text.
     {
+        QRect adjustedRect = paddedRectagle.adjusted(-1 * offset, 0, 0, 0);
         painter.setPen(QPen(Qt::black, 2));
-        painter.drawText(paddedRectagle, Qt::AlignLeft | Qt::AlignVCenter, elidedText);
+        painter.drawText(adjustedRect, Qt::AlignLeft | Qt::AlignVCenter, m_text);
     }
 
     // Draw text cursor.
     {
         if(isSelected && isCursorVisible && !highlightTextSelection)
         {
-            int cursorX = metrics.horizontalAdvance(elidedText.left(m_cursorPosition)) + leftPadding;
+            int cursorX = metrics.horizontalAdvance(m_text.left(m_cursorPosition)) + leftPadding - offset;
             int cursorY = (height() - metrics.height()) / 2;
             int cursorHeight = metrics.height();
             painter.drawLine(cursorX, cursorY, cursorX, cursorY + cursorHeight);
@@ -270,4 +273,23 @@ int MbLineEdit::charIndexAt(int x)
         }
     }
     return m_text.length();
+}
+
+void MbLineEdit::updateOffset()
+{
+    QFontMetrics metrics(*font);
+    int cursorX = metrics.horizontalAdvance(m_text, m_cursorPosition);
+
+    // Get the current start and end.
+    int currentStart = offset;
+    int currentEnd = currentStart + (width() - leftPadding - rightPadding);
+
+    if(cursorX < currentStart)
+    {
+        offset -= (currentStart - cursorX);
+    }
+    else if(cursorX > currentEnd)
+    {
+        offset += (cursorX - currentEnd);
+    }
 }
