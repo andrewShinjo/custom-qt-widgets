@@ -211,11 +211,10 @@ void MbLineEdit::paintEvent(QPaintEvent *event)
     {
         if(highlightTextSelection)
         {
-            int startX = metrics.horizontalAdvance(m_text.left(selectionStart));
-            int endX = metrics.horizontalAdvance(m_text.left(selectionEnd));
-            QRect highlightRect =
-                QRect(QPoint(startX + leftPadding, topPadding),
-                QSize(endX - startX, metrics.height() - bottomPadding));
+            int startX = metrics.horizontalAdvance(m_text.left(selectionStart)) + leftPadding;
+            int startY = topPadding;
+            int endX = qMin(metrics.horizontalAdvance(m_text.right(selectionEnd)) + leftPadding, width() - rightPadding);
+            QRect highlightRect = QRect(QPoint(startX, startY), QSize(endX - startX, metrics.height() - bottomPadding));
             painter.setBrush(Qt::yellow);
             painter.setPen(Qt::NoPen);
             painter.drawRect(highlightRect);
