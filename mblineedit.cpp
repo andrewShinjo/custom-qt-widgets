@@ -45,6 +45,27 @@ void MbLineEdit::setText(const QString &text)
 void MbLineEdit::keyPressEvent(QKeyEvent *event)
 {
     qDebug() << "Key press event";
+
+    switch(event->key())
+    {
+        case Qt::Key_Left:
+        {
+            if(m_cursorPosition > 0)
+            {
+                m_cursorPosition--;
+                update();
+            }
+            break;
+        }
+        case Qt::Key_Right:
+        {
+            if(m_cursorPosition < m_text.length())
+            {
+                m_cursorPosition++;
+                update();
+            }
+        }
+    }
 }
 
 QSize MbLineEdit::minimumSizeHint() const
