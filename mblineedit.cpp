@@ -33,6 +33,7 @@ MbLineEdit::MbLineEdit(QWidget *parent)
 
     isSelected = false;
     setFocusPolicy(Qt::StrongFocus);
+    setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 }
 
 int MbLineEdit::getCursorPosition() const
@@ -59,6 +60,8 @@ void MbLineEdit::setText(const QString &text)
 
 void MbLineEdit::keyPressEvent(QKeyEvent *event)
 {
+    bool highlightTextSelection = selectionStart != selectionEnd;
+
     switch(event->key())
     {
         case Qt::Key_Left:
@@ -81,8 +84,6 @@ void MbLineEdit::keyPressEvent(QKeyEvent *event)
         }
         case Qt::Key_Backspace:
         {
-            bool highlightTextSelection = selectionStart != selectionEnd;
-
             if(highlightTextSelection)
             {
                 int removeStart = qMin(selectionStart, selectionEnd);
@@ -103,9 +104,17 @@ void MbLineEdit::keyPressEvent(QKeyEvent *event)
         default:
         {
             bool isKeyPrintable = !event->text().isEmpty() && event->text().at(0).isPrint();
-            if(isKeyPrintable)
+            if(isKeyPrintable && !highlightTextSelection)
             {
                 m_text.insert(m_cursorPosition++, event->text());
+            }
+            else if(isKeyPrintable && highlightTextSelection)
+            {
+                m_text.clear();
+                m_cursorPosition = 0;
+                m_text.insert(m_cursorPosition++, event->text());
+                selectionStart = 0;
+                selectionEnd = 0;
             }
         }
     }
