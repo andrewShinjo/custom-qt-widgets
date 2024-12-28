@@ -1,5 +1,6 @@
 #include <QMouseEvent>
 #include <QPainter>
+#include <QtGlobal>
 #include "mblineedit.h"
 
 const int DEFAULT_MARGIN = 10;
@@ -63,6 +64,27 @@ void MbLineEdit::keyPressEvent(QKeyEvent *event)
                 update();
             }
             break;
+        }
+        case Qt::Key_Backspace:
+        {
+            bool highlightTextSelection = selectionStart != selectionEnd;
+
+            if(highlightTextSelection)
+            {
+                int removeStart = qMin(selectionStart, selectionEnd);
+                int removeEnd = qMax(selectionStart, selectionEnd);
+                m_text.remove(removeStart, removeEnd - removeStart);
+                m_cursorPosition = removeStart;
+                selectionStart = 0;
+                selectionEnd = 0;
+            }
+            else if(!highlightTextSelection)
+            {
+                if(m_cursorPosition > 0)
+                {
+                    m_text.remove(--m_cursorPosition, 1);
+                }
+            }
         }
         default:
         {
