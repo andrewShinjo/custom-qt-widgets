@@ -44,8 +44,6 @@ void MbLineEdit::setText(const QString &text)
 
 void MbLineEdit::keyPressEvent(QKeyEvent *event)
 {
-    qDebug() << "Key press event";
-
     switch(event->key())
     {
         case Qt::Key_Left:
@@ -63,6 +61,15 @@ void MbLineEdit::keyPressEvent(QKeyEvent *event)
             {
                 m_cursorPosition++;
                 update();
+            }
+            break;
+        }
+        default:
+        {
+            bool isKeyPrintable = !event->text().isEmpty() && event->text().at(0).isPrint();
+            if(isKeyPrintable)
+            {
+                m_text.insert(m_cursorPosition++, event->text());
             }
         }
     }

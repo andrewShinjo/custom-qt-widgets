@@ -43,6 +43,7 @@ private:
     bool isSelected;
 
     int charIndexAt(int x);
+    void insertCharAtCursor(QChar c);
 };
 
 #endif // MBLINEEDIT_H
