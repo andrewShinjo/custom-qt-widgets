@@ -95,6 +95,14 @@ void MbLineEdit::keyPressEvent(QKeyEvent *event)
             }
         }
     }
+
+    bool controlAPressed = event->modifiers() & Qt::ControlModifier && event->key() == Qt::Key_A;
+
+    if(controlAPressed)
+    {
+        selectionStart = 0;
+        selectionEnd = m_text.length();
+    }
 }
 
 QSize MbLineEdit::minimumSizeHint() const
