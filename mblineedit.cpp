@@ -82,17 +82,47 @@ QSize MbLineEdit::minimumSizeHint() const
     return QSize(width, height);
 }
 
+void MbLineEdit::mouseMoveEvent(QMouseEvent *event)
+{
+    // Handle text selection
+    {
+        if(selecting)
+        {
+            int x = event->pos().x();
+            selectionEnd = charIndexAt(x);
+        }
+    }
+
+    update();
+}
+
 void MbLineEdit::mousePressEvent(QMouseEvent *event)
 {
-    // Determine which character I pressed.
+    // Update cursor position depending on location of mouse press.
     {
         int x = event->pos().x();
         int index = charIndexAt(x);
         m_cursorPosition = index;
     }
 
+    // Handle text selection.
+    {
+        int x = event->pos().x();
+        selectionStart = charIndexAt(x);
+        selectionEnd = charIndexAt(x);
+        selecting = true;
+    }
+
     isSelected = true;
     update();
+}
+
+void MbLineEdit::mouseReleaseEvent(QMouseEvent *event)
+{
+    // Handle text selection.
+    {
+        selecting = false;
+    }
 }
 
 void MbLineEdit::paintEvent(QPaintEvent *event)
@@ -118,6 +148,20 @@ void MbLineEdit::paintEvent(QPaintEvent *event)
     int maxWidth = width();
     QString elidedText = metrics.elidedText(m_text, Qt::ElideRight, maxWidth);
 
+    bool highlightTextSelection = selectionStart != selectionEnd;
+
+    // Draw text selection.
+    {
+        if(highlightTextSelection)
+        {
+            int startX = metrics.horizontalAdvance(elidedText.left(selectionStart));
+            int endX = metrics.horizontalAdvance(elidedText.left(selectionEnd));
+            painter.setBrush(Qt::yellow);
+            painter.setPen(Qt::NoPen);
+            painter.drawRect(QRect(QPoint(startX, 0), QSize(endX - startX, height())));
+        }
+    }
+
     // Draw text.
     {
         painter.setPen(QPen(Qt::black, 2));
@@ -126,7 +170,7 @@ void MbLineEdit::paintEvent(QPaintEvent *event)
 
     // Draw text cursor.
     {
-        if(isSelected && isCursorVisible)
+        if(isSelected && isCursorVisible && !highlightTextSelection)
         {
             int cursorX = metrics.horizontalAdvance(elidedText.left(m_cursorPosition));
             int cursorY = (height() - metrics.height()) / 2;

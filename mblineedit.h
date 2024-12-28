@@ -24,7 +24,11 @@ public:
 protected:
     void keyPressEvent(QKeyEvent *event) override;
     QSize minimumSizeHint() const override;
+
+    void mouseMoveEvent(QMouseEvent *event) override;
     void mousePressEvent(QMouseEvent *event) override;
+    void mouseReleaseEvent(QMouseEvent *event) override;
+
     void paintEvent(QPaintEvent *event) override;
     QSize sizeHint() const override;
 
@@ -41,6 +45,11 @@ private:
     QTimer *timer;
     bool isCursorVisible;
     bool isSelected;
+
+    // text selection variables
+    bool selecting;
+    int selectionStart;
+    int selectionEnd;
 
     int charIndexAt(int x);
     void insertCharAtCursor(QChar c);
