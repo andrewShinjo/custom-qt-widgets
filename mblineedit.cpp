@@ -158,7 +158,7 @@ void MbLineEdit::paintEvent(QPaintEvent *event)
             int endX = metrics.horizontalAdvance(elidedText.left(selectionEnd));
             painter.setBrush(Qt::yellow);
             painter.setPen(Qt::NoPen);
-            painter.drawRect(QRect(QPoint(startX, 0), QSize(endX - startX, height())));
+            painter.drawRect(QRect(QPoint(startX, 5), QSize(endX - startX, metrics.height() - 5)));
         }
     }
 
