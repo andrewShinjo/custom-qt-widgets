@@ -22,6 +22,7 @@ MbLineEdit::MbLineEdit(QWidget *parent)
         leftPadding = DEFAULT_PADDING;
         rightPadding = DEFAULT_PADDING;
         topPadding = DEFAULT_PADDING;
+        isCursorVisible = false;
         offset = 0;
     }
 
@@ -151,7 +152,6 @@ void MbLineEdit::mouseMoveEvent(QMouseEvent *event)
             selectionEnd = charIndexAt(x);
         }
     }
-
     update();
 }
 

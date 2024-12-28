@@ -47,7 +47,6 @@ private:
     int m_cursorPosition;
     QString m_text;
     QTimer *timer;
-    bool isCursorVisible;
     bool isSelected;
 
     // text selection variables
@@ -62,7 +61,7 @@ private:
     int leftPadding;
     int rightPadding;
     int topPadding;
-
+    bool isCursorVisible;
     int offset;
 
     int charIndexAt(int x);

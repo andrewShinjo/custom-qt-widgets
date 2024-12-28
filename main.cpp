@@ -1,7 +1,5 @@
 #include <QtWidgets>
-
-#include "./mbbutton.h"
-#include "./mblineedit.h"
+#include "customtextobject.h"
 
 void showMessage()
 {
@@ -11,24 +9,46 @@ void showMessage()
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    QWidget window;
-    QVBoxLayout *layout = new QVBoxLayout;
+    QTextEdit *textEdit = new QTextEdit;
 
-    MbButton *button1 = new MbButton("Button 1");
-    MbLineEdit *lineEdit = new MbLineEdit();
-    QLineEdit *lineEdit2 = new QLineEdit();
+    // Add table.
+    {
+        QTextCursor cursor = textEdit->textCursor();
+        QTextTableFormat tableFormat;
+        tableFormat.setWidth(QTextLength(QTextLength::PercentageLength, 100));
+        QTextTable *table = cursor.insertTable(3, 2, tableFormat);
 
-    lineEdit->setText("This is text");
+        QTextTableCellFormat cellFormat;
+        cellFormat.setBorder(1);
+        cellFormat.setBorderStyle(QTextFrameFormat::BorderStyle_Solid);
+        cellFormat.setBorderBrush(Qt::black);
 
-    layout->addWidget(button1);
-    layout->addWidget(lineEdit);
-    layout->addWidget(lineEdit2);
-    layout->addStretch();
+        for(int row = 0; row < 3; row++)
+        {
+            for(int col = 0; col < 2; col++)
+            {
+                QTextTableCell cell = table->cellAt(row, col);
+                cell.setFormat(cellFormat);
+                QTextCursor cellCursor = cell.firstCursorPosition();
+                cellCursor.insertText(QString("Row %1, Column %2").arg(row + 1).arg(col + 1));
+            }
+        }
+    }
 
-    QObject::connect(button1, &MbButton::clicked, showMessage);
+    // Add custom widget.
+    {
+        CustomTextObject *object = new CustomTextObject;
+        textEdit->document()->documentLayout()->registerHandler(
+            CustomTextObject::CustomTextObjectFormat, object
+        );
 
-    window.setLayout(layout);
-    window.show();
+        QTextCursor cursor = textEdit->textCursor();
+        QTextCharFormat format;
+        format.setObjectType(CustomTextObject::CustomTextObjectFormat);
+        cursor.insertText(QString(QChar::ObjectReplacementCharacter), format);
+    }
 
+
+    textEdit->show();
     return a.exec();
 }
